@@ -2,7 +2,8 @@ package hu.virgo.calendar;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.virgo.calendar.application.model.Event;
-import hu.virgo.calendar.infrastructure.configuration.CalendarConfiguration;
+import hu.virgo.calendar.infrastructure.configuration.Calendar;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -30,12 +31,12 @@ class EventCreateTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private CalendarConfiguration calendarConfiguration;
+    private Calendar calendar;
 
     @Test
     void testEventPost_invalidEventDuration() throws Exception {
         Event event = validEvent();
-        event.endTime(event.getStartTime().plusHours(calendarConfiguration.getMaxEventLength()));
+        event.endTime(event.getStartTime().plusHours(calendar.getMaxEventLength()));
 
         performPost(event)
                 .andExpect(status().isBadRequest())
@@ -67,6 +68,7 @@ class EventCreateTest {
     }
 
     @Test
+    @Transactional
     void testEventPost_overlappingEvents() throws Exception {
         Event event = validEvent();
         //store valid event
@@ -89,12 +91,13 @@ class EventCreateTest {
         event.setEndTime(event.getEndTime().plusMinutes(10));
 
         performPost(event)
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.detail")
                         .value("Event must start at :30 or :00 in every hour!"));
     }
 
     @Test
+    @Transactional
     void testEventPost_bookTheWholeDay() throws Exception {
         Event event = validEvent();
         //store valid event

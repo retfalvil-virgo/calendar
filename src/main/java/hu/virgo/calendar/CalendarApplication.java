@@ -1,12 +1,12 @@
 package hu.virgo.calendar;
 
-import hu.virgo.calendar.infrastructure.configuration.CalendarConfiguration;
+import hu.virgo.calendar.infrastructure.configuration.Calendar;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication(scanBasePackages = "hu.virgo.calendar")
-@EnableConfigurationProperties(CalendarConfiguration.class)
+@EnableConfigurationProperties(Calendar.class)
 public class CalendarApplication {
 
     public static void main(String[] args) {

@@ -17,6 +17,7 @@ paths:
         - calendar
       summary: Get an event by the given date and time
       description: Find the ongoing event with the given date and time. Also works with past events
+      operationId: getEventByDateTime
       parameters:
         - name: dateTime
           in: query
@@ -46,6 +47,7 @@ paths:
         - calendar
       summary: Create an event in the calendar
       description: Create an event in the calendar
+      operationId: createEvent
       requestBody:
         required: true
         content:
@@ -75,6 +77,7 @@ paths:
         - calendar
       summary: Obtain the schedule for the given week
       description: Obtain the schedule for the given week, the start of the week is preconfiguration
+      operationId: scheduleOfWeek
       parameters:
         - name: date
           in: path
@@ -107,6 +110,7 @@ paths:
         - calendar
       summary: Obtain the available time slots for the given week
       description: Obtain the available time slots for the given week, the start of the week is preconfiguration
+      operationId: availableTimeSlotsOfWeek
       parameters:
         - name: date
           in: path
@@ -138,12 +142,12 @@ components:
     Event:
       type: object
       required:
-        - start
-        - end
+        - startTime
+        - endTime
         - organizer
       properties:
         id:
-          type: string
+          type: integer
         startTime:
           type: string
           format: date-time

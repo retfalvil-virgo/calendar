@@ -1,7 +1,6 @@
 package hu.virgo.calendar.infrastructure.configuration;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.time.DayOfWeek;
@@ -12,9 +11,8 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.Set;
 
 @Data
-@Accessors(fluent = false)
 @ConfigurationProperties("hu.virgo.calendar")
-public class CalendarConfiguration {
+public class Calendar {
 
     private static final int WEEK_REMAINDER = 6;
 
@@ -24,6 +22,7 @@ public class CalendarConfiguration {
     private int startMinute;
     private int minEventLength;
     private int maxEventLength;
+    private Set<Integer> eventStartMinutes;
     private int timeSlotSize;
 
     private Set<DayOfWeek> unavailableDays = Set.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
@@ -50,17 +49,21 @@ public class CalendarConfiguration {
                 .withMinute(endMinute);
     }
 
-    public OffsetTime eventStartLimit() {
+    public OffsetTime getStartOfDay() {
         if (startOfDay == null) {
             startOfDay = OffsetTime.of(startHour, startMinute, 0, 0, ZoneOffset.UTC);
         }
         return startOfDay;
     }
 
-    public OffsetTime eventEndLimit() {
+    public OffsetTime getEndOfDay() {
         if (endOfDay == null) {
             endOfDay = OffsetTime.of(endHour, endMinute, 0, 0, ZoneOffset.UTC);
         }
         return endOfDay;
+    }
+
+    public boolean isDayOfWeekAvailable(DayOfWeek dayOfWeek) {
+        return !unavailableDays.contains(dayOfWeek);
     }
 }

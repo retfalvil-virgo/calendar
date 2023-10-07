@@ -1,7 +1,7 @@
 package hu.virgo.calendar.domain.validation;
 
 import hu.virgo.calendar.domain.model.Event;
-import hu.virgo.calendar.infrastructure.configuration.CalendarConfiguration;
+import hu.virgo.calendar.infrastructure.configuration.Calendar;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,32 +11,33 @@ import java.time.temporal.ChronoUnit;
 @RequiredArgsConstructor
 public class EventValidator {
 
-    private final CalendarConfiguration calendarConfiguration;
+    private final Calendar calendar;
 
     public void validate(Event event) {
 
-        long durationInMinutes = ChronoUnit.MINUTES.between(event.startTime(), event.endTime());
-        if (durationInMinutes < calendarConfiguration.getMinEventLength()
-                || durationInMinutes > calendarConfiguration.getMaxEventLength()) {
-            raiseException(STR. "Event duration must be between \{ calendarConfiguration.getMinEventLength() } and \{ calendarConfiguration.getMaxEventLength() } minutes" );
+        long durationInMinutes = ChronoUnit.MINUTES.between(event.getStartTime(), event.getEndTime());
+        if (durationInMinutes < calendar.getMinEventLength()
+                || durationInMinutes > calendar.getMaxEventLength()) {
+            raiseException("Event duration must be between %s and %s minutes".formatted(calendar.getMinEventLength(), calendar.getMaxEventLength()));
         }
 
-        if (durationInMinutes % calendarConfiguration.getTimeSlotSize() != 0) {
-            raiseException(STR. "Event duration must be the multiple of \{ calendarConfiguration.getTimeSlotSize() } minutes" );
+        if (durationInMinutes % calendar.getTimeSlotSize() != 0) {
+            raiseException("Event duration must be the multiple of %s minutes".formatted(calendar.getTimeSlotSize()));
         }
 
-        if (calendarConfiguration.getUnavailableDays().contains(event.startTime().getDayOfWeek()) || calendarConfiguration.getUnavailableDays().contains(event.endTime().getDayOfWeek())) {
-            raiseException(STR."Event cannot take place on unavailable days!");
+        if (!calendar.isDayOfWeekAvailable(event.getStartTime().getDayOfWeek())
+                || !calendar.isDayOfWeekAvailable(event.getEndTime().getDayOfWeek())) {
+            raiseException("Event cannot take place on unavailable days!");
         }
 
-        if (event.startTime().toOffsetTime().isBefore(calendarConfiguration.eventStartLimit()) || event.endTime().toOffsetTime().isAfter(calendarConfiguration.eventEndLimit())) {
-            raiseException(STR. "Event must be take place between: \{ calendarConfiguration.eventStartLimit() } and \{ calendarConfiguration.eventEndLimit() }" );
+        if (event.getStartTime().toOffsetTime().isBefore(calendar.getStartOfDay())
+                || event.getEndTime().toOffsetTime().isAfter(calendar.getEndOfDay())) {
+            raiseException("Event must be take place between: %s and %s".formatted(calendar.getStartOfDay(), calendar.getEndOfDay()) );
         }
-        //FIXME, not timeslotsize but starting
-        if (event.startTime().getMinute() % calendarConfiguration.getTimeSlotSize() != 0
-                || event.startTime().getSecond() != 0
-                || event.startTime().getNano() != 0) {
-            raiseException(STR. "Event must start at :\{ calendarConfiguration.getTimeSlotSize() } or :00 in every hour!" );
+        if (!calendar.getEventStartMinutes().contains(event.getStartTime().getMinute())
+                || event.getStartTime().getSecond() != 0
+                || event.getStartTime().getNano() != 0) {
+            raiseException("Event must start at :%s or :00 in every hour!".formatted(calendar.getTimeSlotSize()) );
         }
     }
 

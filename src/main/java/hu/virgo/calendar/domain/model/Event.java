@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +13,6 @@ import java.io.Serializable;
 import java.time.OffsetDateTime;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -24,7 +22,7 @@ public class Event implements Serializable {
     @Id
     @GeneratedValue
     @Column(name = "id")
-    private Long id;
+    private Integer id;
 
     @Column(name = "start_date_time", nullable = false)
     private OffsetDateTime startTime;
@@ -32,14 +30,14 @@ public class Event implements Serializable {
     @Column(name = "end_date_time", nullable = false)
     private OffsetDateTime endTime;
 
-    @Column(name="organizer", nullable = false)
+    @Column(name = "organizer", nullable = false)
     private String organizer;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Event)) return false;
-        return id != null && id.equals(((Event) o).id());
+        return id != null && id.equals(((Event) o).getId());
     }
 
     @Override
