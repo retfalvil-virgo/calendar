@@ -4,7 +4,7 @@ import hu.virgo.calendar.domain.model.Event;
 import hu.virgo.calendar.domain.model.TimeSlot;
 import hu.virgo.calendar.domain.validation.CalendarValidationException;
 import hu.virgo.calendar.domain.validation.EventValidator;
-import hu.virgo.calendar.infrastructure.configuration.Calendar;
+import hu.virgo.calendar.domain.model.Calendar;
 import hu.virgo.calendar.infrastructure.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -50,7 +50,7 @@ public class EventService {
      * @return {@link Optional<Event>}, if event can be found.
      */
     public Optional<Event> findByDateTime(OffsetDateTime offsetDateTime) {
-        return eventRepository.findByStartTimeLessThanAndEndTimeGreaterThan(offsetDateTime, offsetDateTime);
+        return eventRepository.findByDateTime(offsetDateTime, offsetDateTime);
     }
 
     /**

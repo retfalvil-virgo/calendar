@@ -32,15 +32,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Event'
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:   
-                  message:
-                    type: string
+        '404':
+          description: Event not found
 
     post:
       tags:
@@ -62,14 +55,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Event'
         '400':
-          description: Invalid request, failed to create the event
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:   
-                  message:
-                    type: string
+          description: Invalid request, failed to create event
   
   /calendar/schedule/{date}:
     get:
@@ -94,15 +80,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Event'
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
 
   /calendar/schedule/available/{date}:
     get:
@@ -127,15 +104,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TimeSlot'
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string           
 
 components:
   schemas:

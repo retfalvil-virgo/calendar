@@ -1,7 +1,7 @@
 package hu.virgo.calendar.domain.validation;
 
 import hu.virgo.calendar.domain.model.Event;
-import hu.virgo.calendar.infrastructure.configuration.Calendar;
+import hu.virgo.calendar.domain.model.Calendar;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

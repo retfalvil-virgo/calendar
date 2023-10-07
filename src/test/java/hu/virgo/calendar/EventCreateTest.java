@@ -2,7 +2,7 @@ package hu.virgo.calendar;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.virgo.calendar.application.model.Event;
-import hu.virgo.calendar.infrastructure.configuration.Calendar;
+import hu.virgo.calendar.domain.model.Calendar;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

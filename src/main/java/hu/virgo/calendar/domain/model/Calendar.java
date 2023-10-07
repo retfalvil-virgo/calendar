@@ -1,4 +1,4 @@
-package hu.virgo.calendar.infrastructure.configuration;
+package hu.virgo.calendar.domain.model;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
