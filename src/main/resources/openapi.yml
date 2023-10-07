@@ -1,0 +1,166 @@
+openapi: 3.0.3
+info:
+  title: Simple calendar for booking events
+  description: Simple calendar for booking events
+  contact:
+    email: retfalvi.levente@virgo.hu
+  version: 0.0.1-SNAPSHOT
+
+tags:
+  - name: calendar
+    description: Managing calendar events.
+
+paths:
+  /calendar/events/:
+    get:
+      tags:
+        - calendar
+      summary: Get an event by the given date and time
+      description: Find the ongoing event with the given date and time. Also works with past events
+      parameters:
+        - name: dateTime
+          in: query
+          description: Date and time for the query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Event successfully returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:   
+                  message:
+                    type: string
+
+    post:
+      tags:
+        - calendar
+      summary: Create an event in the calendar
+      description: Create an event in the calendar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+      responses:
+        '200':
+          description: Event successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          description: Invalid request, failed to create the event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:   
+                  message:
+                    type: string
+  
+  /calendar/schedule/{date}:
+    get:
+      tags:
+        - calendar
+      summary: Obtain the schedule for the given week
+      description: Obtain the schedule for the given week, the start of the week is preconfiguration
+      parameters:
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Successfully returned the scheduled events for the given week
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /calendar/schedule/available/{date}:
+    get:
+      tags:
+        - calendar
+      summary: Obtain the available time slots for the given week
+      description: Obtain the available time slots for the given week, the start of the week is preconfiguration
+      parameters:
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Successfully returned the available time slots for the given week
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeSlot'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string           
+
+components:
+  schemas:
+    Event:
+      type: object
+      required:
+        - start
+        - end
+        - organizer
+      properties:
+        id:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        organizer:
+          type: string
+    TimeSlot:
+      type: object
+      required:
+        - start
+        - end
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time

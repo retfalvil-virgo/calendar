@@ -1,0 +1,24 @@
+hu:
+  virgo:
+    calendar:
+      start-hour: 9
+      start-minute: 0
+      end-hour: 17
+      end-minute: 0
+      min-event-length: 30
+      max-event-length: 180
+      time-slot-size: 30
+      first-day-of-week: 'MONDAY'
+
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:mydb
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+
