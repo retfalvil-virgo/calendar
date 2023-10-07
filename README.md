@@ -1,2 +1,2 @@
 # calendar
-Home work for Allianz Technologies
+Homework for Allianz Technologies
