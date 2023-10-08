@@ -11,16 +11,17 @@ tags:
     description: Managing calendar events.
 
 paths:
-  /calendar/events/:
+  /calendar/events/at/{dateTime}/organizer:
     get:
       tags:
         - calendar
       summary: Get an event by the given date and time
       description: Find the ongoing event with the given date and time. Also works with past events
-      operationId: getEventByDateTime
+      operationId: organizerOfEventByDateTime
       parameters:
         - name: dateTime
-          in: query
+          in: path
+          required: true
           description: Date and time for the query
           schema:
             type: string
@@ -31,10 +32,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Event'
+                type: string
         '404':
           description: Event not found
 
+  /calendar/events/:
     post:
       tags:
         - calendar
@@ -57,13 +59,13 @@ paths:
         '400':
           description: Invalid request, failed to create event
   
-  /calendar/schedule/{date}:
+  /calendar/week/{date}/event:
     get:
       tags:
         - calendar
       summary: Obtain the schedule for the given week
       description: Obtain the schedule for the given week, the start of the week is preconfiguration
-      operationId: scheduleOfWeek
+      operationId: eventsOfWeek
       parameters:
         - name: date
           in: path
@@ -81,7 +83,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Event'
 
-  /calendar/schedule/available/{date}:
+  /calendar/week/{date}/timeslots/:
     get:
       tags:
         - calendar

@@ -15,7 +15,8 @@ Homework for Allianz Technologies
 - Testing the whole application with SpringBootTest
 
 #### Exercise design
-- During the task we can book 'time' in a calendar, that's why this app called `Calendar` and the time called `Event`
+- During the task we can book 'time' in a calendar, that's why this app called `Calendar`.
+- Booked time is called `Event`, available timeslots called `TimeSlot`
 - For the simplicity, some overlap is allowed in the database, one `event's` end time can be the same as the next `event's` end time.
 - While querying the events by its exact end time, the query won't return it, since it is considered as ended.
 

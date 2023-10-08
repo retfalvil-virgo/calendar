@@ -4,7 +4,7 @@ import hu.virgo.calendar.domain.model.Event;
 import hu.virgo.calendar.domain.model.TimeSlot;
 import hu.virgo.calendar.domain.validation.CalendarValidationException;
 import hu.virgo.calendar.domain.validation.EventValidator;
-import hu.virgo.calendar.domain.model.Calendar;
+import hu.virgo.calendar.domain.model.CalendarProperties;
 import hu.virgo.calendar.infrastructure.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ import java.util.Optional;
 public class EventService {
 
     private final EventRepository eventRepository;
-    private final Calendar calendar;
+    private final CalendarProperties calendarProperties;
     private final EventValidator eventValidator;
 
     /**
@@ -60,8 +60,8 @@ public class EventService {
      * @return List of {@link Event}s
      */
     public List<Event> scheduleOfWeek(OffsetDateTime dateTime) {
-        OffsetDateTime startOfWeek = calendar.startOfWeek(dateTime);
-        OffsetDateTime endOfWeek = calendar.endOfWeek(dateTime);
+        OffsetDateTime startOfWeek = calendarProperties.startOfWeek(dateTime);
+        OffsetDateTime endOfWeek = calendarProperties.endOfWeek(dateTime);
         return eventRepository.findByStartTimeGreaterThanEqualAndEndTimeLessThanEqual(startOfWeek, endOfWeek);
     }
 
@@ -72,18 +72,18 @@ public class EventService {
      * @return List of {@link TimeSlot}s
      */
     public List<TimeSlot> availableTimeSlotsOfWeek(OffsetDateTime dateTime) {
-        OffsetDateTime endOfWeek = calendar.endOfWeek(dateTime);
-        OffsetTime endOfDay = calendar.getEndOfDay();
+        OffsetDateTime endOfWeek = calendarProperties.endOfWeek(dateTime);
+        OffsetTime endOfDay = calendarProperties.getEventEndTime();
         // get events for the week
         List<Event> events = scheduleOfWeek(dateTime);
 
         // iterate over the days and create available timeslots for each day
         List<TimeSlot> timeSlots = new ArrayList<>();
-        for (OffsetDateTime dayStartTime = calendar.startOfWeek(dateTime);
+        for (OffsetDateTime dayStartTime = calendarProperties.startOfWeek(dateTime);
              !dayStartTime.isAfter(endOfWeek);
              dayStartTime = dayStartTime.plusDays(1)) {
 
-            if (calendar.isDayOfWeekAvailable(dayStartTime.getDayOfWeek())) {
+            if (calendarProperties.isDayOfWeekAvailable(dayStartTime.getDayOfWeek())) {
                 continue;
             }
 

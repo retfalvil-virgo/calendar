@@ -2,7 +2,7 @@ package hu.virgo.calendar;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.virgo.calendar.application.model.Event;
-import hu.virgo.calendar.domain.model.Calendar;
+import hu.virgo.calendar.domain.model.CalendarProperties;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +31,12 @@ class EventCreateTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private Calendar calendar;
+    private CalendarProperties calendarProperties;
 
     @Test
     void testEventPost_invalidEventDuration() throws Exception {
         Event event = validEvent();
-        event.endTime(event.getStartTime().plusHours(calendar.getMaxEventLength()));
+        event.endTime(event.getStartTime().plusHours(calendarProperties.getEventMaxLength()));
 
         performPost(event)
                 .andExpect(status().isBadRequest())

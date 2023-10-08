@@ -6,61 +6,37 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.time.DayOfWeek;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
-import java.time.ZoneOffset;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Set;
 
 @Data
 @ConfigurationProperties("hu.virgo.calendar")
-public class Calendar {
+public class CalendarProperties {
 
     private static final int WEEK_REMAINDER = 6;
 
-    private int startHour;
-    private int endHour;
-    private int endMinute;
-    private int startMinute;
-    private int minEventLength;
-    private int maxEventLength;
+    private OffsetTime eventStartTime;
+    private OffsetTime eventEndTime;
+    private int eventMinLength;
+    private int eventMaxLength;
     private Set<Integer> eventStartMinutes;
     private int timeSlotSize;
 
     private Set<DayOfWeek> unavailableDays = Set.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
-    private OffsetTime startOfDay;
-    private OffsetTime endOfDay;
-
     private DayOfWeek firstDayOfWeek = DayOfWeek.MONDAY;
     private DayOfWeek lastDayOfWeek;
 
     public OffsetDateTime startOfWeek(OffsetDateTime offsetDateTime) {
-        return offsetDateTime
-                .with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
-                .withHour(startHour)
-                .withMinute(startMinute);
+        OffsetDateTime firstDay = offsetDateTime.with(TemporalAdjusters.previousOrSame(this.firstDayOfWeek));
+        return OffsetDateTime.of(firstDay.toLocalDate(), eventStartTime.toLocalTime(), eventStartTime.getOffset());
     }
 
     public OffsetDateTime endOfWeek(OffsetDateTime offsetDateTime) {
         if (lastDayOfWeek == null) {
             lastDayOfWeek = firstDayOfWeek.plus(WEEK_REMAINDER);
         }
-        return offsetDateTime
-                .with(TemporalAdjusters.nextOrSame(lastDayOfWeek))
-                .withHour(endHour)
-                .withMinute(endMinute);
-    }
-
-    public OffsetTime getStartOfDay() {
-        if (startOfDay == null) {
-            startOfDay = OffsetTime.of(startHour, startMinute, 0, 0, ZoneOffset.UTC);
-        }
-        return startOfDay;
-    }
-
-    public OffsetTime getEndOfDay() {
-        if (endOfDay == null) {
-            endOfDay = OffsetTime.of(endHour, endMinute, 0, 0, ZoneOffset.UTC);
-        }
-        return endOfDay;
+        OffsetDateTime lastDay = offsetDateTime.with(TemporalAdjusters.nextOrSame(lastDayOfWeek));
+        return OffsetDateTime.of(lastDay.toLocalDate(), eventEndTime.toLocalTime(), eventEndTime.getOffset());
     }
 
     public boolean isDayOfWeekAvailable(DayOfWeek dayOfWeek) {

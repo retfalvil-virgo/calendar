@@ -24,9 +24,9 @@ public class CalendarController implements CalendarApi {
     private final CalendarMapper calendarMapper;
 
     @Override
-    public ResponseEntity<Event> getEventByDateTime(OffsetDateTime dateTime) {
+    public ResponseEntity<String> organizerOfEventByDateTime(OffsetDateTime dateTime) {
         return eventService.findByDateTime(dateTime)
-                .map(e -> ResponseEntity.ok(calendarMapper.map(e)))
+                .map(event -> ResponseEntity.ok(event.getOrganizer()))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -49,7 +49,7 @@ public class CalendarController implements CalendarApi {
     }
 
     @Override
-    public ResponseEntity<List<Event>> scheduleOfWeek(LocalDate date) {
+    public ResponseEntity<List<Event>> eventsOfWeek(LocalDate date) {
         OffsetDateTime offsetDateTime = calendarMapper.toOffsetDateTime(date);
         List<Event> events = calendarMapper.mapToEvents(eventService.scheduleOfWeek(offsetDateTime));
         return ResponseEntity.ok(events);

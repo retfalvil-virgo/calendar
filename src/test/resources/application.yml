@@ -14,14 +14,16 @@ spring:
 hu:
   virgo:
     calendar:
-      start-hour: 9
-      start-minute: 0
-      end-hour: 17
-      end-minute: 0
-      min-event-length: 30
-      max-event-length: 180
-      time-slot-size: 30
-      first-day-of-week: 'MONDAY'
+      event-start-time: 09:00:00Z
+      event-end-time: 17:00:00Z
+      event-min-length: 30
+      event-max-length: 180
       event-start-minutes:
-        - 0
-        - 30
+          - 0
+          - 30
+      time-slot-size: 30
+
+      first-day-of-week: 'MONDAY'
+      unavailable-days:
+        - 'SUNDAY'
+        - 'SATURDAY'
